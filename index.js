@@ -29,6 +29,9 @@ var con = createConnection({
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on port ${process.env.PORT}`);
 });
+app.get('/', (req, res) => {
+  res.send('<h1>AV Rental Backend API endpoint!</h1> <h4>Message: Success</h4> <p>Team 7</p>');
+})
 
 app.use('/user', userRouter);
 app.use('/car', carRouter);
