@@ -26,8 +26,8 @@ var con = createConnection({
   database: "rentalAV"
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server listening on port ${process.env.PORT}`);
+app.listen(5000, () => {
+  console.log(`Server listening on port 5000');
 });
 app.get('/', (req, res) => {
   res.send('<h1>AV Rental Backend API endpoint!</h1> <h4>Message: Success</h4> <p>Team 7</p>');
