@@ -32,6 +32,27 @@ function Copyright(props) {
   );
 }
 
+//   function Discount (price)  {
+//     const authContext = useContext(AuthContext);
+//     const {user} = authContext;
+//             const startDate = user.signedUpOn;
+//             const currentDate = new Date();
+//             const diffTime = Math.abs(currentDate - startDate);
+//             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+//             console.log(diffDays);
+           
+//             /*check if current day is weeked or weekday*/
+//             const today = new Date()
+//             const day = today.getDay();
+//             if(day == 0 || day == 6)
+//             console.log("weekend");
+//             else{
+//             console.log("weekday");
+//             const hour = today.getHours();
+//             if(hour>16 && hour<19)
+//             console.log("evening");
+//            }
+// }  
 
 const tiers = [
   {
@@ -50,6 +71,7 @@ const tiers = [
   {
     title: 'Pro',
     price: '25',
+    discountedPrice: '20',
     walletUpgrade: 15,
     description: [
       '100$ Signup rewards',
@@ -63,6 +85,7 @@ const tiers = [
   {
     title: 'Enterprise',
     price: '35',
+    discountedPrice: '30',
     walletUpgrade: 30,
     description: [
       '100$ Signup rewards',
@@ -100,23 +123,48 @@ const footers = [
   },
 ];
 
+
+
 function PricingContent() {
 
   const authContext = useContext(AuthContext);
+  const {user, setUser, token, updateLocalStorage} = authContext;
   const [open, setOpen] = useState(false);
   const history = useHistory();
-  const {user, setUser, token, updateLocalStorage} = authContext;
+  
 
   const handleClose = () => {
     setOpen(false);
   } 
 
-  const walletUpgradeHandler = async (walletUpgrade) => {
+  const walletUpgradeHandler = async (tier) => {
 
-    console.log("walletUpgrade : ", walletUpgrade);
+    var newBalance;
+    //console.log("walletUpgrade : ", walletUpgrade);
+     
+    if (tier.title === 'Enterprise'){
+
+      if ((Math.ceil(Math.abs(new Date() - new Date(user.signedUpOn)) / (1000 * 60 * 60 * 24))) > 30){
+        newBalance = 40;
+      }
+      else{
+        newBalance = 50;
+      }
+    }
+
+    if (tier.title === 'Pro'){
+
+      if ((Math.ceil(Math.abs(new Date() - new Date(user.signedUpOn)) / (1000 * 60 * 60 * 24))) > 30){
+        newBalance = 20;
+      }
+      else{
+        newBalance = 25;
+      }
+   }
+
     const obj = {
       ...user,
-      walletBalance: user.walletBalance + walletUpgrade,
+      walletBalance: user.walletBalance +newBalance
     }
     const response = await updateUserProfile(obj);
     console.log(response);
@@ -207,7 +255,15 @@ function PricingContent() {
                     }}
                   >
                     <Typography component="h2" variant="h3" color="text.primary">
-                      ${tier.price}
+                      
+                       {
+                          (tier.title === 'Free' ? 0 :
+                          (tier.title === 'Pro' ? ((Math.ceil(Math.abs(new Date() - new Date(user.signedUpOn)) / (1000 * 60 * 60 * 24))) > 30 ? 20 : 25) :   
+                          ((Math.ceil(Math.abs(new Date() - new Date(user.signedUpOn)) / (1000 * 60 * 60 * 24))) > 30 ? 40 : 50)
+                          )
+                          )
+                       }
+                                   
                     </Typography>
                     <Typography variant="h6" color="text.secondary">
                       /mo
@@ -227,7 +283,7 @@ function PricingContent() {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant} onClick={()=>walletUpgradeHandler(tier.walletUpgrade)}>
+                  <Button fullWidth variant={tier.buttonVariant} onClick={()=>walletUpgradeHandler(tier)}>
                     {tier.buttonText}
                   </Button>
                 </CardActions>
@@ -274,3 +330,5 @@ function PricingContent() {
 export default function Pricing() {
   return <PricingContent />;
 }
+
+              
