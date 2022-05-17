@@ -27,12 +27,12 @@ var con = createConnection({
 });
 
 app.listen(5000, () => {
-  console.log(`Server listening on port 5000');
+  console.log(`Server listening on port 5000`);
 });
+
 app.get('/', (req, res) => {
   res.send('<h1>AV Rental Backend API endpoint!</h1> <h4>Message: Success</h4> <p>Team 7</p>');
 })
-
 app.use('/user', userRouter);
 app.use('/car', carRouter);
 app.use('/ride', rideRouter);
